@@ -1,3 +1,3 @@
-require_relative 'services/illness_request_consumer'
+require_relative 'consumers/illness_request_consumer'
 
 IllnessRequestConsumer.new
