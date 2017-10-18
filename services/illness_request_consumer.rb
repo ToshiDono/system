@@ -3,9 +3,10 @@ class Services
     include Hutch::Consumer
     consume 'illness.request.new'
 
+    # to-do
+    # нужно будет забрать IllnessRequest по id(в сообщении) из базы и обработать другими классами
     def process(message)
-      puts message
-      File.open("#{Dir.pwd}/hutch_logs.log", 'a') { |f| f.puts(message)}
+      File.open("#{Dir.pwd}/hutch_logs.log", 'a') { |f| f.puts("Create IllnessRequest with id = #{message}")}
     end
   end
 end
