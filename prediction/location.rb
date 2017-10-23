@@ -3,9 +3,8 @@ class Prediction
 
     # return {clinic}
     def find_nearest_clinic(illness_request_id)
-      clinics = all_clinics
-      result = {distance: distance(illness_request_id, 1), clinic: clinics.first}
-      clinics.each do |clinic|
+      result = {distance: distance(illness_request_id, 1), clinic: all_clinics.first}
+      all_clinics.each do |clinic|
         current_distance = distance(illness_request_id, clinic[:id])
         if result[:distance] > current_distance
           result[:distance] = current_distance
@@ -18,8 +17,8 @@ class Prediction
     # return km
     def distance(illness_request_id, clinic_id)
       Geocoder::Calculations.distance_between(
-          self.find_coordinates(Patient,illness_request_id),
-          self.find_coordinates(Clinic, clinic_id),
+          find_coordinates(Patient,illness_request_id),
+          find_coordinates(Clinic, clinic_id),
           units: :km
       )
     end
@@ -32,7 +31,7 @@ class Prediction
     private
 
     def all_clinics
-      DB[:clinics].to_a
+      @clinics ||= DB[:clinics].to_a
     end
   end
 end
