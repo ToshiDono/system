@@ -1,4 +1,4 @@
-class Clinic
+class Clinic < Base
 
   # return string
   def address(clinic_id)

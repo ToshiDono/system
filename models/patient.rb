@@ -1,4 +1,4 @@
-class Patient
+class Patient < Base
 
   # return string
   def address(illness_request_id)
