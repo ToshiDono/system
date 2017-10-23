@@ -18,8 +18,8 @@ class Prediction
     # return km
     def distance(illness_request_id, clinic_id)
       Geocoder::Calculations.distance_between(
-          Prediction::Patient.new.find_coordinates(illness_request_id),
-          Prediction::Clinic.new.find_coordinates(clinic_id),
+          Patient.new.find_coordinates(illness_request_id),
+          Clinic.new.find_coordinates(clinic_id),
           units: :km
       )
     end
