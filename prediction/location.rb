@@ -3,15 +3,11 @@ class Prediction
 
     # return {clinic}
     def find_nearest_clinic(illness_request_id)
-      result = {distance: distance(illness_request_id, 1), clinic: all_clinics.first}
-      all_clinics.each do |clinic|
+      all_clinics.reduce({distance: distance(illness_request_id, 1), clinic: all_clinics.first}) do |result, clinic|
         current_distance = distance(illness_request_id, clinic[:id])
-        if result[:distance] > current_distance
-          result[:distance] = current_distance
-          result[:clinic] = clinic
-        end
+        result.merge!(distance: current_distance, clinic: clinic) if result[:distance] > current_distance
+        result
       end
-      result[:clinic]
     end
 
     # return km

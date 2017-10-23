@@ -15,6 +15,5 @@ class Prediction
     def find_by_location
       Prediction::Location.new.find_nearest_clinic(@illness_request_id)
     end
-    #
   end
 end
