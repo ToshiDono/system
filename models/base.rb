@@ -1,6 +1,5 @@
 class Base
-
-  def address(id)
+  def address(_id)
     fail NotImplementedError, 'implement in child class'
   end
 end

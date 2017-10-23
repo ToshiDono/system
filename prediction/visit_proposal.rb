@@ -1,6 +1,5 @@
 class Prediction
   class VisitProposal
-
     def initialize(illness_request_id)
       @illness_request_id = illness_request_id
     end
