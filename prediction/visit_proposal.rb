@@ -5,21 +5,21 @@ class Prediction
     end
 
     def run
-      find_by_location
+      find_clinic_by_location
     end
 
     def run_s
-      find_by_symptom
+      find_specializations_by_symptoms
     end
 
     private
 
     # return {clinic}
-    def find_by_location
+    def find_clinic_by_location
       Prediction::Location.new.find_nearest_clinic(@illness_request_id)
     end
 
-    def find_by_symptom
+    def find_specializations_by_symptoms
       Specialization.new.find_by_illness_request(@illness_request_id)
     end
   end
