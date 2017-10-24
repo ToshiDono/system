@@ -20,7 +20,7 @@ class Prediction
     end
 
     def find_by_symptom
-      IllnessRequest.new.doctors_specialization(@illness_request_id)
+      Specialization.new.find_by_illness_request(@illness_request_id)
     end
   end
 end
