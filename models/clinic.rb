@@ -21,14 +21,16 @@ class Clinic < Base
          INNER JOIN doctor_specializations
          ON (doctors.id = doctor_specializations.doctor_id)
          WHERE clinics.id = ?
-         AND doctor_specializations.specialization_id = ?', essence[:id], specialization_id
+         AND doctor_specializations.specialization_id = ?',
+        essence[:id], specialization_id
     ].all
   end
 
   # rerutn [{ specialization }]
   def specializations
     DB[
-        'SELECT specializations.id, specializations.title, specializations.code FROM specializations
+        'SELECT specializations.id, specializations.title, specializations.code
+         FROM specializations
          INNER JOIN doctor_specializations
          ON (specializations.id = doctor_specializations.specialization_id)
          INNER JOIN doctors
@@ -46,9 +48,6 @@ class Clinic < Base
 
   # return {clinic}
   def find_on_id(id)
-    DB[
-        'SELECT * FROM clinics
-         WHERE (id=?)', id
-    ].first
+    DB.from(:clinics).where(id: id).first
   end
 end

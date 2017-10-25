@@ -7,12 +7,11 @@ class Patient < Base
 
   # return patients.id
   def self.find_on_illness_request_id(id)
-    DB[
-        'SELECT patients.id FROM patients
-         INNER JOIN illness_requests
-         ON (illness_requests.patient_id=patients.id)
-         WHERE(illness_requests.id=?)', id
-    ].first[:id]
+    DB
+        .from(:patients)
+        .join(:illness_requests, patient_id: :id)
+        .where(Sequel.lit('illness_requests.id=?', id))
+        .select(Sequel.lit('patients.id')).first[:id]
   end
 
   # return string
@@ -24,9 +23,6 @@ class Patient < Base
 
   # return {patient}
   def find_on_id(id)
-    DB[
-        'SELECT * FROM patients
-         WHERE (id=?)', id
-    ].first
+    DB.from(:patients).where(id: id).first
   end
 end
