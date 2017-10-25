@@ -1,8 +1,14 @@
 class Prediction
   class Location
+    attr_accessor :exclude_clinics_ids
+
+    def initialize
+      @exclude_clinics_ids = []
+    end
+
     # return { distance: X, clinic: {} }
     def find_nearest_clinic(illness_request_id)
-      all_clinics.reduce({ distance: distance(illness_request_id, 1), clinic: all_clinics.first }) do |result, clinic|
+      clinics.reduce({ distance: distance(illness_request_id, 1), clinic: clinics.first }) do |result, clinic|
         current_distance = distance(illness_request_id, clinic[:id])
         result.merge!(distance: current_distance, clinic: clinic) if result[:distance] > current_distance
         result
@@ -31,9 +37,24 @@ class Prediction
 
     private
 
-    # return [clinics]
+    # return Sequel::Postgres::Dataset
     def all_clinics
-      @clinics ||= DB[:clinics].to_a
+      @clinics ||= DB[:clinics]
+
+    end
+
+    # return [clinics]
+    def clinics
+      if @exclude_clinics_ids
+        clinics_exclude
+      else
+        all_clinics.to_a
+      end
+    end
+
+    # return [clinics]
+    def clinics_exclude
+      all_clinics.exclude(id: @exclude_clinics_ids).to_a
     end
 
     # return { latitude: x, longitude: x }
