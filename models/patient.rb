@@ -5,7 +5,7 @@ class Patient < Base
     @essence = find_on_id(id)
   end
 
-  # return {patient}
+  # return patients.id
   def self.find_on_illness_request_id(id)
     DB[
         'SELECT patients.id FROM patients

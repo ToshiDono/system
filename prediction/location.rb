@@ -1,6 +1,6 @@
 class Prediction
   class Location
-    # return {clinic}
+    # return { distance: X, clinic: {} }
     def find_nearest_clinic(illness_request_id)
       all_clinics.reduce({ distance: distance(illness_request_id, 1), clinic: all_clinics.first }) do |result, clinic|
         current_distance = distance(illness_request_id, clinic[:id])
