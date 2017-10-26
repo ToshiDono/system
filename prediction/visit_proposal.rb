@@ -3,7 +3,7 @@ class Prediction
     def initialize(illness_request_id)
       @illness_request_id = illness_request_id
       @doctors = []
-      @@attempt = 1
+      @attempt = 1
     end
 
     def run
@@ -11,6 +11,20 @@ class Prediction
     end
 
     private
+
+    # return [doctor]
+    def find_doctors_in_clinics_by_specialization
+      @all_specializations = find_specializations_by_symptoms if @attempt == 1
+
+      @clinic = find_nearest_clinic_by_location[:clinic]
+
+      unless @all_specializations.empty?
+        # specialization, which are in the clinic and in the list of relevant
+        @general_specializations = @all_specializations & clinic_specializations
+        search_clinic_doctors
+      end
+      @doctors
+    end
 
     # return {clinic}
     def find_nearest_clinic_by_location
@@ -23,24 +37,10 @@ class Prediction
       Specialization.new.find_by_illness_request(@illness_request_id)
     end
 
-    # return [doctor]
-    def find_doctors_in_clinics_by_specialization
-      @all_specializations = find_specializations_by_symptoms if @@attempt == 1
-
-      @clinic = find_nearest_clinic_by_location[:clinic]
-
-      unless @all_specializations.empty?
-        # specialization, which are in the clinic and in the list of relevant
-        @general_specializations = @all_specializations & clinic_specializations
-        search_clinic_doctors
-      end
-      @doctors
-    end
-
     # return [{ doctors }]
     def search_repeat
       @location.exclude_clinics_ids << @clinic[:id]
-      @@attempt += 1
+      @attempt += 1
       find_doctors_in_clinics_by_specialization
     end
 

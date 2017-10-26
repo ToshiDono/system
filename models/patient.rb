@@ -1,10 +1,6 @@
 class Patient < Base
   attr_reader :essence
 
-  def initialize(id)
-    @essence = find_on_id(id)
-  end
-
   # return patients.id
   def self.find_on_illness_request_id(id)
     DB
@@ -12,6 +8,10 @@ class Patient < Base
         .join(:illness_requests, patient_id: :id)
         .where(Sequel.lit('illness_requests.id=?', id))
         .select(Sequel.lit('patients.id')).first[:id]
+  end
+
+  def initialize(id)
+    @essence = find_on_id(id)
   end
 
   # return string
