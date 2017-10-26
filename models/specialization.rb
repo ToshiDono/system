@@ -1,5 +1,5 @@
 class Specialization
-  # return [doctors specializations]
+  # return [{ specializations.id, specializations.title, specializations.code }]
   def find_by_illness_request(id)
     DB[
     'SELECT specializations.id, specializations.title, specializations.code
@@ -12,6 +12,6 @@ class Specialization
       ON disease_symptoms.symptom_id = illness_request_symptoms.symptom_id
       WHERE (illness_request_symptoms.illness_request_id = ?)
       ORDER BY id ASC', id
-    ].all.uniq!
+    ].all
   end
 end

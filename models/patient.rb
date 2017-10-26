@@ -1,6 +1,28 @@
 class Patient < Base
+  attr_reader :essence
+
+  # return patients.id
+  def self.find_on_illness_request_id(id)
+    DB
+        .from(:patients)
+        .join(:illness_requests, patient_id: :id)
+        .where(Sequel.lit('illness_requests.id=?', id))
+        .select(Sequel.lit('patients.id')).first[:id]
+  end
+
+  def initialize(id)
+    @essence = find_on_id(id)
+  end
+
   # return string
-  def address(illness_request_id)
-    DB['SELECT address FROM patients INNER JOIN illness_requests ON (illness_requests.patient_id=patients.id) WHERE(illness_requests.id=?)', illness_request_id].first[:address]
+  def address
+    essence[:address]
+  end
+
+  private
+
+  # return {patient}
+  def find_on_id(id)
+    DB.from(:patients).where(id: id).first
   end
 end
