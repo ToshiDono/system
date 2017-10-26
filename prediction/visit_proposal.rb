@@ -32,14 +32,7 @@ class Prediction
       unless @all_specializations.empty?
         # specialization, which are in the clinic and in the list of relevant
         @general_specializations = @all_specializations & clinic_specializations
-
-        if !@general_specializations.empty?
-          clinic_doctors
-          missing_specializations
-          search_repeat unless @all_specializations.empty?
-        else
-          search_repeat
-        end
+        search_clinic_doctors
       end
       @doctors
     end
@@ -62,9 +55,21 @@ class Prediction
     end
 
     # looking for doctors in the specializations that are in the clinic
+    # and that are match the search criteria
     def clinic_doctors
       @general_specializations.each do |spec|
         @doctors << Clinic.new(@clinic[:id]).find_doctors_by_specialization(spec[:id])
+      end
+    end
+
+    # performs a search until all the doctors of the specialties are searched for
+    def search_clinic_doctors
+      if !@general_specializations.empty?
+        clinic_doctors
+        missing_specializations
+        search_repeat unless @all_specializations.empty?
+      else
+        search_repeat
       end
     end
   end
