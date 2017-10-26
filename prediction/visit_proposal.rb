@@ -3,6 +3,7 @@ class Prediction
     def initialize(illness_request_id)
       @illness_request_id = illness_request_id
       @doctors = []
+      @@attempt = 1
     end
 
     def run
@@ -13,23 +14,13 @@ class Prediction
       find_specializations_by_symptoms
     end
 
-    def generl_run
-      find_doctor_in_clinic_by_specialization
+    def general_run
+      find_doctors_in_clinics_by_specialization
     end
 
     # недостающие специализации
     def missing_specializations
       find_specializations_by_symptoms - general_specializations
-    end
-
-    # специализации, которые есть в клинике и в списке нужных
-    def general_specializations
-      # получаем ближайшую клинику
-      clinic = find_nearest_clinic_by_location[:clinic]
-      # получем массив специализаций клиники
-      specializations = Clinic.new(clinic[:id]).specializations
-
-      find_specializations_by_symptoms & specializations
     end
 
     private
@@ -41,57 +32,53 @@ class Prediction
     end
 
     # return [specialization]
-    # находит специалиации врачей, которые могут вылечить болезни, по симптомам которые указал пациент
     def find_specializations_by_symptoms
       Specialization.new.find_by_illness_request(@illness_request_id)
     end
 
     # return [doctor]
-    def find_doctor_in_clinic_by_specialization
-    #   найти специализации по болезни - find_specializations_by_symptoms (вне клиник)
+    #   найти специализации по болезни
     #   найти ближайшую клинику
     #   посмотреть специализации клиники,
     #   если есть врачи нужных специализаций - сохранить их в @doctors
     #   если есть не занятые специализации, искать следующую клинику
-
-      @all_specializations = if @all_specializations.nil?
-                               find_specializations_by_symptoms
-                             else
-                               find_specializations_by_symptoms - @all_specializations
-                             end
-      puts 'специалиации врачей, которые могут вылечить болезни, по симптомам которые указал пациент:'
-      puts @all_specializations
+    def find_doctors_in_clinics_by_specialization
+      @all_specializations = find_specializations_by_symptoms if @@attempt == 1
 
       # получаем ближайшую клинику
-      puts 'ближайшая клиника:'
       clinic = find_nearest_clinic_by_location[:clinic]
-      puts clinic
-      # получем массив специализаций клиники
-      puts 'массив специализаций клиники:'
-      clinic_specializations = Clinic.new(clinic[:id]).specializations
-      puts clinic_specializations
 
-      unless @all_specializations.nil?
+      unless @all_specializations.empty?
         # специализации, которые есть в клинике и в списке нужных
-        puts 'специализации, которые есть в клинике и в списке нужных:'
-        general_specializations = @all_specializations & clinic_specializations
-        puts general_specializations
+        general_specializations = @all_specializations & clinic_specializations(clinic)
 
-        # ищем врачей по специализациям, которые есть в клинике
-        general_specializations.each do |spec|
-          @doctors << Clinic.new(clinic[:id]).find_doctors_by_specialization(spec[:id])
-        end
+        if !general_specializations.empty?
+          # ищем врачей по специализациям, которые есть в клинике
+          general_specializations.each do |spec|
+            @doctors << Clinic.new(clinic[:id]).find_doctors_by_specialization(spec[:id])
+          end
 
-        # недостающие специализации(которых не оказалось в клинике)
-        missing_specializations = @all_specializations - general_specializations
+          # недостающие специализации(которых не оказалось в клинике)
+          @all_specializations -= general_specializations
 
-        if missing_specializations
-          @location.exclude_clinics_ids << clinic[:id]
-          find_doctor_in_clinic_by_specialization
+          search_repeat(clinic) unless @all_specializations.empty?
+        else
+          search_repeat(clinic)
         end
       end
-
       @doctors
+    end
+
+    # return [{ doctors }]
+    def search_repeat(clinic)
+      @location.exclude_clinics_ids << clinic[:id]
+      @@attempt += 1
+      find_doctors_in_clinics_by_specialization
+    end
+
+    # получем массив специализаций клиники
+    def clinic_specializations(clinic)
+      Clinic.new(clinic[:id]).specializations
     end
   end
 end
