@@ -26,7 +26,7 @@ class Clinic < Base
     ].all
   end
 
-  # rerutn [{ specialization }]
+  # rerutn [{ specializations.id, specializations.title, specializations.code }]
   def specializations
     DB[
         'SELECT specializations.id, specializations.title, specializations.code

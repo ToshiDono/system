@@ -1,5 +1,5 @@
 class Specialization
-  # return [doctors specializations]
+  # return [{ specializations.id, specializations.title, specializations.code }]
   def find_by_illness_request(id)
     DB[
     'SELECT specializations.id, specializations.title, specializations.code
