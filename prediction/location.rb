@@ -26,14 +26,9 @@ class Prediction
 
     # return [coordinates]
     def find_coordinates(points_class, id)
-      return @coordinates if coordinates_exists?(points_class, id)
+      coord = points_coordinates(points_class, id)
+      return coord if coord.has_value?(!nil)
       Geocoder.coordinates(points_class.new(id).address)
-    end
-
-    # return boolean
-    def coordinates_exists?(points_class, id)
-      @coordinates = points_coordinates(points_class, id)
-      @coordinates.has_value?(!nil)
     end
 
     private
