@@ -12,6 +12,6 @@ class Specialization
       ON disease_symptoms.symptom_id = illness_request_symptoms.symptom_id
       WHERE (illness_request_symptoms.illness_request_id = ?)
       ORDER BY id ASC', id
-    ].all.uniq!
+    ].all
   end
 end
