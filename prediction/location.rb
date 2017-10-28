@@ -22,7 +22,7 @@ class Prediction
           find_coordinates(Clinic, clinic_id),
           units: :km
       )
-      dist.nil? ? distance(illness_request_id, clinic_id) : dist
+      dist || distance(illness_request_id, clinic_id)
     end
 
     # return [coordinates]
