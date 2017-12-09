@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 ruby '~> 2.4.0'
-gem 'dotenv', '~> 2.2', '>= 2.2.1'
 gem 'geocoder'
 gem 'hutch'
 gem 'pg', '0.20.0'

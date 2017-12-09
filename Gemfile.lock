@@ -12,7 +12,6 @@ GEM
     carrot-top (0.0.7)
       json
     concurrent-ruby (1.0.5)
-    dotenv (2.2.1)
     geocoder (1.4.4)
     hutch (0.24.0)
       activesupport (>= 4.2, < 6)
@@ -33,7 +32,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  dotenv (~> 2.2, >= 2.2.1)
   geocoder
   hutch
   pg (= 0.20.0)
@@ -43,4 +41,4 @@ RUBY VERSION
    ruby 2.4.0p0
 
 BUNDLED WITH
-   1.16.0.pre.3
+   1.16.0
